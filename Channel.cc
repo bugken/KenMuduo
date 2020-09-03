@@ -2,7 +2,7 @@
 
 #include "Channel.h"
 #include "EventLoop.h"
-#include "logger.h"
+#include "Logger.h"
 
 const int Channel::kNoneEvent = 0;
 const int Channel::kReadEvent = EPOLLIN | EPOLLPRI;
