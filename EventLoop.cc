@@ -31,8 +31,7 @@ EventLoop::EventLoop():looping_(false),
     threadId_(CurrentThread::tid()),
     poller_(Poller::newDefaultPoller(this)),
     wakeupFd_(createEventfd()),
-    wakeupChannel_(new Channel(this, wakeupFd_)),
-    currentActiveChannel_(nullptr)
+    wakeupChannel_(new Channel(this, wakeupFd_))
 {
     LOG_INFO("%s %d EventLoop created %p in thread %d\n", __FUNCTION__, __LINE__, this, threadId_);
     if (t_loopInThisThread)
@@ -68,3 +67,46 @@ void EventLoop::handleRead()
   }
 }
 
+//开启事件循环
+void EventLoop::loop()
+{
+    looping_ = true;
+    quit_ = false;
+    LOG_INFO("%s %d EventLoop %p start looping\n", __FUNCTION__, __LINE__, this);
+
+    while (!quit_)
+    {
+        activeChannels_.clear();
+        //监听两类fd，一种为client的fd，一种是wakeup的fd
+        pollReturnTime_ = poller_->poll(kPollTimeMs, &activeChannels_);
+        for (Channel* channel : activeChannels_)
+        {
+            //Poller监听哪些channel发生事件，上报给EventLoop，通知channel处理相应的事件
+            channel->handleEvent(pollReturnTime_);
+        }
+        //执行当前EventLoop事件循环需要处理的回调操作
+        /**
+         * IO线程mainLoop主要做accept操作，得到fd，使用channel打包fd，mainLoop对已有的fd会唤醒一个subloop去处理事件
+         * mainLoop实现注册一个回调cb(需要subloop执行)，mainLoop wakeup subloop以后执行下面的方法，执行mainLoop注册的cb操作
+        */
+        doPendingFunctor();
+    }
+    looping_ = false;
+    LOG_INFO("%s %d EventLoop %p stop looping\n", __FUNCTION__, __LINE__, this);
+}
+
+//退出事件循环 1.loop在自己的线程中调用quit 2.在非Loop的线程中调用Loop的quit
+/**
+ *          mainLoop
+ * 
+ * subLoop1 subLoop2 subLoop3
+*/
+void EventLoop::quit()
+{
+    quit_ = true;
+    if (!isInLoopThread())//如果在其他线程中调用了quit，在一个subloop中调用mainLoop的quit
+    {
+        wakeup();
+    }
+    
+}
