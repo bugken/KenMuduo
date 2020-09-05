@@ -99,7 +99,9 @@ void EventLoop::loop()
 /**
  *          mainLoop
  * 
- * subLoop1 subLoop2 subLoop3
+ *     ****************** 一般模型中存在生产者消费者安全队列，但是muduo中没有生产者-消费者的安全队列，使用wakeupfd_实现
+ * 
+ *    subLoop1 subLoop2 subLoop3
 */
 void EventLoop::quit()
 {
@@ -134,6 +136,9 @@ void EventLoop::queueInLoop(Functor cb)
 
     //唤醒相应的需要执行上面回调操作的loop的线程
     //callPendingFunctor_意思是:当前loop正在执行回调,但是loop又有新的回调
+    /**
+     * 
+    */
     if (!isInLoopThread() || callPendingFunctor_) 
     {
         wakeup();//唤醒所在线程
