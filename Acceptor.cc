@@ -11,7 +11,7 @@ static int createNonblocking()
     int sockfd = ::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
     if (sockfd < 0)
     {
-        LOG_FATAL("%s %d listen socket create failed errno:%d.\n", __FUNCION__, __LINE__, errno);
+        LOG_FATAL("%s %d listen socket create failed errno:%d.\n", __FUNCTION__, __LINE__, errno);
     }
     return sockfd;
 }
@@ -46,7 +46,7 @@ void Acceptor::listen()
 //listenfd事件发生，就有新用户连接了
 void Acceptor::handleRead()
 {
-    InetAddress peerAddr(8000);
+    InetAddress peerAddr;
     int connfd = acceptSocket_.accept(&peerAddr);
     if (connfd > 0)
     {
@@ -61,10 +61,10 @@ void Acceptor::handleRead()
     }
     else
     {
-        LOG_ERROR("%s %d accept error, errno:%d.\n", __FUNCION__, __LINE__, errno);
+        LOG_ERROR("%s %d accept error, errno:%d.\n", __FUNCTION__, __LINE__, errno);
         if (errno == EMFILE)
         {
-            LOG_ERROR("%s %d socket fd reached limit.\n", __FUNCION__, __LINE__);
+            LOG_ERROR("%s %d socket fd reached limit.\n", __FUNCTION__, __LINE__);
         }
     }
 }
