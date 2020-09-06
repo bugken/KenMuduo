@@ -4,7 +4,7 @@
 #include "CurrentThread.h"
 
 
-std::atomic_int Thread::numCreated_;
+std::atomic_int Thread::numCreated_(0);
 Thread::Thread(ThreadFunc, const std::string& name):started_(false),
     joined_(false), tid_(0), func_(std::move(func_)), name_(name)
 {
