@@ -20,7 +20,7 @@ int createEventfd()
     int evtfd = ::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
     if (evtfd < 0)
     {
-        LOG_FATAL("%s %d eventfd error:%d", __FUNCTION__, __LINE__, errno);
+        LOG_FATAL("%s %s %d eventfd error:%d", __FILE__, __FUNCTION__, __LINE__, errno);
     }
     
     return evtfd;
@@ -33,10 +33,10 @@ EventLoop::EventLoop():looping_(false),
     wakeupFd_(createEventfd()),
     wakeupChannel_(new Channel(this, wakeupFd_))
 {
-    LOG_INFO("%s %d EventLoop created %p in thread %d\n", __FUNCTION__, __LINE__, this, threadId_);
+    LOG_INFO("%s %s %d EventLoop created %p in thread %d\n", __FILE__, __FUNCTION__, __LINE__, this, threadId_);
     if (t_loopInThisThread)
     {
-         LOG_FATAL("%s %d Another EventLoop %p in thread %d\n", __FUNCTION__, __LINE__, t_loopInThisThread, threadId_);
+         LOG_FATAL("%s %s %d Another EventLoop %p in thread %d\n", __FILE__, __FUNCTION__, __LINE__, t_loopInThisThread, threadId_);
     }
     else
     {
@@ -63,7 +63,7 @@ void EventLoop::handleRead()
   ssize_t n =read(wakeupFd_, &one, sizeof(one));
   if (n != sizeof(one))
   {
-    LOG_ERROR("%s %d reads %ld bytes instead of 8", __FUNCTION__, __LINE__, n);
+    LOG_ERROR("%s %s %d reads %ld bytes instead of 8", __FILE__, __FUNCTION__, __LINE__, n);
   }
 }
 
@@ -72,7 +72,7 @@ void EventLoop::loop()
 {
     looping_ = true;
     quit_ = false;
-    LOG_INFO("%s %d EventLoop %p start looping\n", __FUNCTION__, __LINE__, this);
+    LOG_INFO("%s %s %d EventLoop %p start looping\n", __FILE__, __FUNCTION__, __LINE__, this);
 
     while (!quit_)
     {
@@ -92,7 +92,7 @@ void EventLoop::loop()
         doPendingFunctor();
     }
     looping_ = false;
-    LOG_INFO("%s %d EventLoop %p stop looping\n", __FUNCTION__, __LINE__, this);
+    LOG_INFO("%s %s %d EventLoop %p stop looping\n", __FILE__, __FUNCTION__, __LINE__, this);
 }
 
 //退出事件循环 1.loop在自己的线程中调用quit 2.在非Loop的线程中调用Loop的quit
@@ -152,7 +152,7 @@ void EventLoop::wakeup()
     ssize_t n = write(wakeupFd_, &one, sizeof(one));
     if (n != sizeof(one))
     {
-        LOG_ERROR("%s %d writes %lu bytes instead of 8\n", __FUNCTION__, __LINE__, n);
+        LOG_ERROR("%s %s %d writes %lu bytes instead of 8\n", __FILE__, __FUNCTION__, __LINE__, n);
     }
 }
 
