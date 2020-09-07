@@ -16,7 +16,7 @@ static EventLoop* CheckLoopNotNull(EventLoop* loop)
 {
     if (loop == nullptr)
     {
-        LOG_FATAL("%s %s %d TcpConnection is null.\n", __FILE__, __FUNCTION__, __LINE__);
+        LOG_FATAL("%s %s %d TcpConnection is null.\n", __FILENAME__, __FUNCTION__, __LINE__);
     }
     return loop;
 }
@@ -38,13 +38,13 @@ TcpConnection::TcpConnection(EventLoop* loop, const std::string& name, int sockf
     channel_->setWriteCallback(std::bind(&TcpConnection::handleWrite, this));
     channel_->setCloseCallback(std::bind(&TcpConnection::handleClose, this));
     channel_->setErrorCallback(std::bind(&TcpConnection::handleError, this));
-    LOG_INFO("%s %s %d TcpConnection::ctor[%s] at fd %d\n", __FILE__, __FUNCTION__, __LINE__, name.c_str(), sockfd);
+    LOG_INFO("%s %s %d TcpConnection::ctor[%s] at fd %d\n", __FILENAME__, __FUNCTION__, __LINE__, name.c_str(), sockfd);
     socket_->setKeepAlive(true);
 }
 
 TcpConnection::~TcpConnection()
 {
-    LOG_INFO("%s %s %d TcpConnection::dtor[%s] at fd %d state %d\n", __FILE__, __FUNCTION__, __LINE__, name_.c_str(), channel_->fd(), (int)state_);
+    LOG_INFO("%s %s %d TcpConnection::dtor[%s] at fd %d state %d\n", __FILENAME__, __FUNCTION__, __LINE__, name_.c_str(), channel_->fd(), (int)state_);
 }
 
 void TcpConnection::handleRead(Timestamp receiveTime)
@@ -63,7 +63,7 @@ void TcpConnection::handleRead(Timestamp receiveTime)
     else
     {
         errno = saveErrno;
-        LOG_ERROR("%s %s %d TcpConnection handle error\n", __FILE__, __FUNCTION__, __LINE__);
+        LOG_ERROR("%s %s %d TcpConnection handle error\n", __FILENAME__, __FUNCTION__, __LINE__);
         handleError();
     }
 }
@@ -93,19 +93,19 @@ void TcpConnection::handleWrite()
         }
         else
         {
-            LOG_ERROR("%s %s %d TcpConnection handleWrite\n", __FILE__, __FUNCTION__, __LINE__);
+            LOG_ERROR("%s %s %d TcpConnection handleWrite\n", __FILENAME__, __FUNCTION__, __LINE__);
         }
     }
     else
     {
-        LOG_ERROR("%s %s %d TcpConnection fd %d is down, no more writing\n", __FILE__, __FUNCTION__, __LINE__, channel_->fd());
+        LOG_ERROR("%s %s %d TcpConnection fd %d is down, no more writing\n", __FILENAME__, __FUNCTION__, __LINE__, channel_->fd());
     }
 }
 
 //调用过程 Poller -> Channel::closeCallback -> TcpConnection::handleClose
 void TcpConnection::handleClose()
 {
-    LOG_INFO("%s %s %d fd %d state %d\n", __FILE__, __FUNCTION__, __LINE__, channel_->fd(), (int)state_);
+    LOG_INFO("%s %s %d fd %d state %d\n", __FILENAME__, __FUNCTION__, __LINE__, channel_->fd(), (int)state_);
     setState(kDisconnecting);
     channel_->disableWriting();
 
@@ -127,7 +127,7 @@ void TcpConnection::handleError()
     {
         err = optval;
     }
-    LOG_ERROR("%s %s %d TcpConnection handle Error, name %s SO_ERROR %d\n", __FILE__, __FUNCTION__, __LINE__, name_.c_str(), err);
+    LOG_ERROR("%s %s %d TcpConnection handle Error, name %s SO_ERROR %d\n", __FILENAME__, __FUNCTION__, __LINE__, name_.c_str(), err);
 }
 
 void TcpConnection::send(const std::string& buf)
@@ -157,7 +157,7 @@ void TcpConnection::sendInLoop(const void* data, size_t len)
     //之前调用过connection的shutdown，不能再发送了
     if (state_ == kDisconnected)
     {
-        LOG_ERROR("%s %s %d disconnected, give up writing.\n", __FILE__, __FUNCTION__, __LINE__);
+        LOG_ERROR("%s %s %d disconnected, give up writing.\n", __FILENAME__, __FUNCTION__, __LINE__);
         return ;
     }
     
@@ -179,7 +179,7 @@ void TcpConnection::sendInLoop(const void* data, size_t len)
             nwrote = 0;
             if (errno != EWOULDBLOCK)
             {
-                LOG_ERROR("%s %s %d error\n", __FILE__, __FUNCTION__, __LINE__);
+                LOG_ERROR("%s %s %d error\n", __FILENAME__, __FUNCTION__, __LINE__);
                 if (errno == EPIPE || errno == ECONNRESET)
                 {
                     faultError = true;

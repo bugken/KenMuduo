@@ -17,7 +17,7 @@ void Socket::bindAddress(const InetAddress& localaddr)
 {
     if (0 != ::bind(sockfd_, (sockaddr*)localaddr.getSocketAddr(), sizeof(sockaddr_in)))
     {
-        LOG_FATAL("%s %s %d bind socket fd %d failed.\n", __FILE__, __FUNCTION__, __LINE__, sockfd_);
+        LOG_FATAL("%s %s %d bind socket fd %d failed.\n", __FILENAME__, __FUNCTION__, __LINE__, sockfd_);
     }
 }
 
@@ -25,7 +25,7 @@ void Socket::listen()
 {
     if (0 != ::listen(sockfd_, 1024))
     {
-        LOG_FATAL("%s %s %d listen socket fd %d failed.\n", __FILE__, __FUNCTION__, __LINE__, sockfd_);
+        LOG_FATAL("%s %s %d listen socket fd %d failed.\n", __FILENAME__, __FUNCTION__, __LINE__, sockfd_);
     }
 }
 
@@ -46,7 +46,7 @@ void Socket::shutdownWrite()
 {
     if(::shutdown(sockfd_, SHUT_WR))
     {
-        LOG_ERROR("%s %s %d shutdown socket fd %d failed.\n", __FILE__, __FUNCTION__, __LINE__, sockfd_);
+        LOG_ERROR("%s %s %d shutdown socket fd %d failed.\n", __FILENAME__, __FUNCTION__, __LINE__, sockfd_);
     }
 }
 

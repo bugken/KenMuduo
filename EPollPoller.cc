@@ -19,7 +19,7 @@ EPollPoller::EPollPoller(EventLoop *loop)
 {
     if (epollfd_ < 0)
     {
-        LOG_FATAL("%s %s %d epoll_create error: %d\n", __FILE__, __FUNCTION__, __LINE__, errno);
+        LOG_FATAL("%s %s %d epoll_create error: %d\n", __FILENAME__, __FUNCTION__, __LINE__, errno);
     }
 }
 
@@ -31,7 +31,7 @@ EPollPoller::~EPollPoller()
 Timestamp EPollPoller::poll(int timeoutMS, ChannelList *activeChannels)
 {
     //实际上应该用LOG_DEBUG输出日志更为合理
-    LOG_INFO("%s %s %d fd total count:%d\n", __FILE__, __FUNCTION__, __LINE__, (int)channels_.size());
+    LOG_INFO("%s %s %d fd total count:%d\n", __FILENAME__, __FUNCTION__, __LINE__, (int)channels_.size());
 
     int numEvents = ::epoll_wait(epollfd_, &*events_.begin(), static_cast<int>(events_.size()), timeoutMS);
     int savedErrno = errno;
@@ -39,7 +39,7 @@ Timestamp EPollPoller::poll(int timeoutMS, ChannelList *activeChannels)
 
     if (numEvents > 0)
     {  
-        LOG_INFO("%s %s %d %d events happened\n", __FILE__, __FUNCTION__, __LINE__, numEvents);
+        LOG_INFO("%s %s %d %d events happened\n", __FILENAME__, __FUNCTION__, __LINE__, numEvents);
         fillActiveChannels(numEvents, activeChannels);
         if (numEvents == events_.size())
         {
@@ -48,14 +48,14 @@ Timestamp EPollPoller::poll(int timeoutMS, ChannelList *activeChannels)
     }
     else if (numEvents == 0)
     {
-        LOG_INFO("%s %s %d timeout.\n", __FILE__, __FUNCTION__, __LINE__);
+        LOG_INFO("%s %s %d timeout.\n", __FILENAME__, __FUNCTION__, __LINE__);
     }
     else
     {
         if (savedErrno != EINTR)
         {
             errno = savedErrno;
-            LOG_ERROR("%s %s %d EPollPoller::poll error", __FILE__, __FUNCTION__, __LINE__);
+            LOG_ERROR("%s %s %d EPollPoller::poll error", __FILENAME__, __FUNCTION__, __LINE__);
         }
     }
 
@@ -71,7 +71,7 @@ Timestamp EPollPoller::poll(int timeoutMS, ChannelList *activeChannels)
 void EPollPoller::updateChannel(Channel *channel)
 {
     const int index = channel->index();
-    LOG_INFO("%s %s %d fd=%d events=%d index=%d\n", __FILE__, __FUNCTION__, __LINE__, channel->fd(), channel->events(), index);
+    LOG_INFO("%s %s %d fd=%d events=%d index=%d\n", __FILENAME__, __FUNCTION__, __LINE__, channel->fd(), channel->events(), index);
 
     if (index == kNew || index == kDeleted)
     {
@@ -106,7 +106,7 @@ void EPollPoller::removeChannel(Channel *channel)
     int fd = channel->fd();
     channels_.erase(fd);
 
-    LOG_INFO("%s %s %d fd=%d \n", __FILE__, __FUNCTION__, __LINE__, channel->fd());
+    LOG_INFO("%s %s %d fd=%d \n", __FILENAME__, __FUNCTION__, __LINE__, channel->fd());
 
     int index = channel->index();
     if (index == kAdded)
@@ -141,11 +141,11 @@ void EPollPoller::update(int operation, Channel *channel)
     {
         if (operation == EPOLL_CTL_DEL)
         {
-            LOG_ERROR("%s %s %d epoll_ctr del error:%d\n", __FILE__, __FUNCTION__, __LINE__, errno);
+            LOG_ERROR("%s %s %d epoll_ctr del error:%d\n", __FILENAME__, __FUNCTION__, __LINE__, errno);
         }
         else
         {
-            LOG_FATAL("%s %s %d epoll_ctr add/mod error:%d\n", __FILE__, __FUNCTION__, __LINE__, errno);
+            LOG_FATAL("%s %s %d epoll_ctr add/mod error:%d\n", __FILENAME__, __FUNCTION__, __LINE__, errno);
         }
     }
 }

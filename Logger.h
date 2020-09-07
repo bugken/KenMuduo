@@ -1,8 +1,12 @@
 #pragma once
 
 #include <string>
+#include <string.h>
 
 #include "noncopyable.h"
+
+//从全路径中获取文件名
+#define __FILENAME__ (strrchr(__FILE__, '/') ? (strrchr(__FILE__, '/') + 1):__FILE__)
 
 //LOG_INFO("%s %d", arg1, arg2)
 #define LOG_INFO(LogmsgFormat, ...) \

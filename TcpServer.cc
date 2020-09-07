@@ -9,7 +9,7 @@ static EventLoop* CheckLoopNotNull(EventLoop* loop)
 {
     if (loop == nullptr)
     {
-        LOG_FATAL("%s %s %d mainLoop is null.\n", __FILE__, __FUNCTION__, __LINE__);
+        LOG_FATAL("%s %s %d mainLoop is null.\n", __FILENAME__, __FUNCTION__, __LINE__);
     }
     return loop;
 }    
@@ -68,7 +68,7 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr)
     ++nextConnId_;
     std::string connName = name_ + buf;
 
-    LOG_INFO("%s %s %d %s new connection %s from %s \n", __FILE__, __FUNCTION__, __LINE__, 
+    LOG_INFO("%s %s %d %s new connection %s from %s \n", __FILENAME__, __FUNCTION__, __LINE__, 
         name_.c_str(), connName.c_str(), peerAddr.toIpPort().c_str());
 
     //通过sockfd获取其绑定的本机的IP地址和端口信息
@@ -77,7 +77,7 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr)
     socklen_t addrlen = sizeof(local);
     if (::getsockname(sockfd, (sockaddr*)&local, &addrlen) < 0)
     {
-        LOG_ERROR("%s %s %d getsockname error\n", __FILE__, __FUNCTION__, __LINE__);
+        LOG_ERROR("%s %s %d getsockname error\n", __FILENAME__, __FUNCTION__, __LINE__);
     }
     InetAddress localAddr(local);
     
