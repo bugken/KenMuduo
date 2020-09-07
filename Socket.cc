@@ -31,10 +31,16 @@ void Socket::listen()
 
 int Socket::accept(InetAddress* peerAddr)
 {
+    /**
+     * 1.accept函数的参数不合法
+     * 2.对返回的connfd没有设置非阻塞
+     * 服务器为Reator模型 one loop one thread
+     * 每个loop里面 poller + non-blocking IO
+    */
     struct sockaddr_in addr;
-    socklen_t len;
+    socklen_t len = sizeof(addr);
     bzero(&addr, sizeof(addr));
-    int connfd = ::accept(sockfd_, (sockaddr*)&addr, &len);
+    int connfd = ::accept4(sockfd_, (sockaddr*)&addr, &len, SOCK_NONBLOCK|SOCK_CLOEXEC);
     if (connfd >= 0)
     {
         peerAddr->setSocketAddr(addr);
