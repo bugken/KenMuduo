@@ -102,6 +102,7 @@ void TcpConnection::handleWrite()
     }
 }
 
+//调用过程 Poller -> Channel::closeCallback -> TcpConnection::handleClose
 void TcpConnection::handleClose()
 {
     LOG_INFO("%s %d fd %d state %d\n", __FUNCTION__, __LINE__, channel_->fd(), (int)state_);
@@ -110,7 +111,7 @@ void TcpConnection::handleClose()
 
     TcpConnectionPtr connPtr(shared_from_this());
     connectionCallback_(connPtr);//执行连接关闭的回调
-    closeCallback_(connPtr);//关闭连接的回调
+    closeCallback_(connPtr);//关闭连接的回调,这里执行的TcpServer::removeConncection回调方法
 }
 
 void TcpConnection::handleError()
