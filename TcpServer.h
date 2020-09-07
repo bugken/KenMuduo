@@ -49,7 +49,7 @@ private:
 
     std::unique_ptr<Acceptor> acceptor_;//运行在mainLoop，任务是监听新连接事件
 
-    std::unique_ptr<EventLoopThreadPool> threadPool_; //one loop per thread
+    std::shared_ptr<EventLoopThreadPool> threadPool_; //one loop per thread
 
     ConnectionCallback connectionCallback_;//有新连接的时候的回调
     MessageCallback messageCallback_;//有读写消息时候的回调

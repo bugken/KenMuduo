@@ -47,14 +47,7 @@ void TcpServer::start()
 {
     if (started_++ == 0)//防止一个TCPServer对象呗start多次
     {
-        if (threadInitCallback_)
-        {
-           threadPool_->start(threadInitCallback_);//启动底层的loop线程池
-        }
-        else
-        {
-            LOG_FATAL("%s %s %d threadInitCallback_ is nullptr\n", __FILENAME__, __FUNCTION__, __LINE__);
-        }
+        threadPool_->start(threadInitCallback_);//启动底层的loop线程池
         loop_->runInLoop(std::bind(&Acceptor::listen, acceptor_.get()));
     }
 }
