@@ -21,6 +21,10 @@ EPollPoller::EPollPoller(EventLoop *loop)
     {
         LOG_FATAL("%s %s %d epoll_create error: %d\n", __FILENAME__, __FUNCTION__, __LINE__, errno);
     }
+    else
+    {
+        LOG_INFO("%s %s %d epoll_create sucess, epoll fd: %d\n", __FILENAME__, __FUNCTION__, __LINE__, epollfd_);
+    }
 }
 
 EPollPoller::~EPollPoller()
@@ -119,8 +123,8 @@ void EPollPoller::removeChannel(Channel *channel)
 //填写活跃的连接
 void EPollPoller::fillActiveChannels(int numEvents, ChannelList *activeChannel) const
 {
-    for (int i = 0; i < numEvents; numEvents++)
-    {
+    for (int i = 0; i < numEvents; ++i)
+    {  
         Channel* channel = static_cast<Channel*>(events_[i].data.ptr);
         channel->set_revents(events_[i].events);
         activeChannel->push_back(channel);//EventLoop就拿到了它的Poller给他返回的所有发生事情的channel列表了

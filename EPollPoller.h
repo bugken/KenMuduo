@@ -23,6 +23,7 @@ public:
     Timestamp poll(int timeoutMS, ChannelList* activeChannels) override;
     void updateChannel(Channel* channel) override;
     void removeChannel(Channel* channel) override;
+    int epollFd(){ return epollfd_; }
 
 private:
     static const int kInitEventListSize = 16;
