@@ -127,6 +127,7 @@ void EPollPoller::fillActiveChannels(int numEvents, ChannelList *activeChannel) 
     {  
         Channel* channel = static_cast<Channel*>(events_[i].data.ptr);
         channel->set_revents(events_[i].events);
+        LOG_INFO("%s %s %d active channel fd=%d \n", __FILENAME__, __FUNCTION__, __LINE__, channel->fd());
         activeChannel->push_back(channel);//EventLoop就拿到了它的Poller给他返回的所有发生事情的channel列表了
     }
 }
