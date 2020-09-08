@@ -23,6 +23,7 @@ TcpServer::TcpServer(EventLoop* loop, const InetAddress &listenAddr, const std::
     nextConnId_(1),
     started_(0)
 {
+    LOG_INFO("%s %s %d TcpServer created, acceptor fd %d\n", __FILENAME__, __FUNCTION__, __LINE__, acceptor_->acceptFd());
     //当有新用户连接时，会执行TcpServer::newConnection回调
     acceptor_->setNewConnectionCallback(std::bind(&TcpServer::newConnection, this, 
         std::placeholders::_1, std::placeholders::_2));

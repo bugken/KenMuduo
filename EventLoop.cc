@@ -33,7 +33,8 @@ EventLoop::EventLoop():looping_(false),
     wakeupFd_(createEventfd()),
     wakeupChannel_(new Channel(this, wakeupFd_))
 {
-    LOG_INFO("%s %s %d EventLoop created %p in thread %d\n", __FILENAME__, __FUNCTION__, __LINE__, this, threadId_);
+    LOG_INFO("%s %s %d EventLoop created %p in thread %d, wakeFd %d\n", __FILENAME__, __FUNCTION__, 
+        __LINE__, this, threadId_, wakeupFd_);
     if (t_loopInThisThread)
     {
          LOG_FATAL("%s %s %d Another EventLoop %p in thread %d\n", __FILENAME__, __FUNCTION__, __LINE__, t_loopInThisThread, threadId_);
