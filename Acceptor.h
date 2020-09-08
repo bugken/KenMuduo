@@ -20,6 +20,7 @@ public:
     void setNewConnectionCallback(const NewConnectionCallback& cb){ newConnectionCallback_ = std::move(cb);}
     bool listenning() const { return listenning_; }
     void listen();
+    int acceptFd() { return acceptSocket_.fd(); }
 private:
     void handleRead();
 
