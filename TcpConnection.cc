@@ -56,14 +56,14 @@ void TcpConnection::handleRead(Timestamp receiveTime)
         //已建立连接的用户，有可读事件发生，调用用户传入的回调操作
         messageCallback_(shared_from_this(), &inputBuffer_, receiveTime);
     }
-    else if (n = 0)
+    else if (n == 0)
     {
         handleClose();
     }
     else
     {
         errno = saveErrno;
-        LOG_ERROR("%s %s %d TcpConnection handle error\n", __FILENAME__, __FUNCTION__, __LINE__);
+        LOG_ERROR("%s %s %d TcpConnection handle error, read fd data size %ld\n", __FILENAME__, __FUNCTION__, __LINE__, n);
         handleError();
     }
 }
