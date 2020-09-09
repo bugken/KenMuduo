@@ -63,7 +63,7 @@ void Channel::handleEvent(Timestamp receiveTime)
 void Channel::handleEventWithGuard(Timestamp receiveTime)
 {
     LOG_INFO("%s %s %d channel handleEvent fd:%d revents:%d", __FILENAME__, __FUNCTION__, __LINE__, fd_, revents_);
-    if ((revents_ & EPOLLHUP) && (revents_ & EPOLLIN))
+    if ((revents_ & EPOLLHUP) && !(revents_ & EPOLLIN))
     {
         if (closeCallback_) closeCallback_();
     }
